@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:retro_cam/config/application.dart';
+import 'package:retro_cam/config/route_handlers.dart';
+import 'package:retro_cam/config/routes.dart';
 import 'package:retro_cam/main.dart';
 
 class TakePictureScreen extends StatelessWidget {
@@ -70,11 +73,10 @@ class _TakePictureBodyState extends State<_TakePictureBody> {
           try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-            Navigator.push(
+            Application.router.navigateTo(
               context,
-              MaterialPageRoute(
-                builder: (context) => _DisplayPictureScreen(imagePath: image.path),
-              ),
+              Routes.displayPicture,
+              routeSettings: RouteSettings(arguments: DisplayPictureArgument(image.path)),
             );
           } catch (e) {
             print(e);

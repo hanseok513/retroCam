@@ -1,4 +1,7 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:retro_cam/config/application.dart';
+import 'package:retro_cam/config/routes.dart';
 import 'package:retro_cam/pages/take-picture.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -11,11 +14,10 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Text('Go to Camera'),
         onPressed: () {
-          Navigator.push(
+          Application.router.navigateTo(
             context,
-            MaterialPageRoute(
-              builder: (context) => TakePictureScreen(),
-            ),
+            Routes.takePicture,
+            transition: TransitionType.inFromRight,
           );
         },
       ),
