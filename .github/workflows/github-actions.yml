@@ -16,8 +16,8 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@master
       with:
-        name: ios-build
-        path: build/ios/iphoneos
+        name: apk-build
+        path: build/app/outputs/apk/release
 
   build_ios:
     runs-on: macOS-latest
@@ -32,8 +32,8 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@master
       with:
-        name: apk-build
-        path: build/app/outputs/apk/release
+        name: ios-build
+        path: build/ios/iphoneos
     
   deploy_apk:
     runs-on: ubuntu-latest
