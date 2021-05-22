@@ -17,7 +17,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: apk-build
-        path: build/app/outputs/apk/release
+        path: client/retro_cam/build/app/outputs/apk/release
 
   build_ios:
     runs-on: macOS-latest
@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: ios-build
-        path: build/ios/iphoneos
+        path: client/retro_cam/build/ios/iphoneos
     
   deploy_apk:
     runs-on: ubuntu-latest
