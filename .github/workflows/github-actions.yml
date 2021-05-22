@@ -21,6 +21,9 @@ jobs:
 
   build_ios:
     runs-on: macOS-latest
+    defaults:
+      run:
+        working-directory: ./client/retro_cam
     steps:
     - uses: actions/checkout@master
     - uses: subosito/flutter-action@v1.5.0
@@ -35,6 +38,9 @@ jobs:
   deploy_apk:
     runs-on: ubuntu-latest
     needs: build_apk
+    defaults:
+      run:
+        working-directory: ./client/retro_cam
     steps:
       - uses: actions/checkout@master
       - name: Download Apk
