@@ -2,35 +2,50 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:retro_cam/config/application.dart';
-import 'package:retro_cam/config/route_handlers.dart';
-import 'package:retro_cam/config/routes.dart';
-import 'package:retro_cam/main.dart';
+import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
+import 'package:retro_cam/pages/strip.dart';
+
+class AvailableCameraController {
+  Future<List<CameraDescription>> _cameraDescription;
+
+  AvailableCameraController() {
+    _cameraDescription = availableCameras();
+  }
+
+  get cameras {
+    return _cameraDescription;
+  }
+}
 
 class TakePictureScreen extends StatelessWidget {
+  final int index;
+  final AvailableCameraController availableCameraController = Get.put(AvailableCameraController());
+  TakePictureScreen({Key key, this.index = 1}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<CameraState>(builder: (context, cameraState, child) {
-      return FutureBuilder<List<CameraDescription>>(
-        future: cameraState.cameras,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _TakePictureBody(camera: snapshot.data.first);
-          }
-          return CircularProgressIndicator();
-        },
-      );
-    });
+    return FutureBuilder<List<CameraDescription>>(
+      future: availableCameraController.cameras,
+      builder: (context, snapshot) {
+        debugPrint('In TakePictureScreen ${index}');
+        if (snapshot.hasData) {
+          return _TakePictureBody(camera: snapshot.data.first, index: this.index);
+        }
+        return CircularProgressIndicator();
+      },
+    );
   }
 }
 
 class _TakePictureBody extends StatefulWidget {
   final CameraDescription camera;
+  final int index;
 
   const _TakePictureBody({
     Key key,
     @required this.camera,
+    @required this.index,
   }) : super(key: key);
 
   @override
@@ -40,12 +55,16 @@ class _TakePictureBody extends StatefulWidget {
 class _TakePictureBodyState extends State<_TakePictureBody> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
+  final StripController _stripController = Get.find();
+  int index;
 
   @override
   void initState() {
     super.initState();
     _controller = CameraController(widget.camera, ResolutionPreset.medium);
     _initializeControllerFuture = _controller.initialize();
+    debugPrint('In TakePicturebodyState ${widget.index}');
+    index = widget.index;
   }
 
   @override
@@ -67,40 +86,29 @@ class _TakePictureBodyState extends State<_TakePictureBody> {
           return Center(child: CircularProgressIndicator());
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera),
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-            final image = await _controller.takePicture();
-            Application.router.navigateTo(
-              context,
-              Routes.displayPicture,
-              routeSettings: RouteSettings(arguments: DisplayPictureArgument(image.path)),
+      floatingActionButton: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return FloatingActionButton(
+              child: Icon(Icons.camera),
+              onPressed: () async {
+                try {
+                  await _initializeControllerFuture;
+                  debugPrint('print me ${index}');
+                  stdout.writeln('print me ${index}');
+                  final image = await _controller.takePicture();
+                  _stripController.updateItem(index, image.path);
+                } catch (e) {
+                  print(e);
+                }
+                Get.to(StripScreen());
+              },
             );
-          } catch (e) {
-            print(e);
           }
+          return Center(child: CircularProgressIndicator());
         },
       ),
-    );
-  }
-}
-
-class _DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-
-  const _DisplayPictureScreen({
-    Key key,
-    this.imagePath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
     );
   }
 }
