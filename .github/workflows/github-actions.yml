@@ -48,8 +48,11 @@ jobs:
         with:
           name: apk-build
       - name: Upload Apk
-        uses: w9jds/firebase-action@master
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          args: deploy --only hosting
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: >-
+            ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PC_API_6633098807224626672_395
+            }}
+          channelId: live
+          projectId: pc-api-6633098807224626672-395
