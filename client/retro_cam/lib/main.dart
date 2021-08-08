@@ -16,8 +16,12 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: 'RetroCam',
       theme: ThemeData(
+        brightness: Brightness.dark,
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'Shrikhand',
+        primaryColor: Colors.black,
+        accentColor: Color.fromRGBO(255, 156, 42, 1),
       ),
       home: HomeScreen(),
     );
