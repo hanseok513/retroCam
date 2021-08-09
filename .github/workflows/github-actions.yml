@@ -53,4 +53,4 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: testers
-          file: /home/runner/work/retroCam/retroCam/*.apk
+          file: /home/runner/work/retroCam/retroCam/app.apk
