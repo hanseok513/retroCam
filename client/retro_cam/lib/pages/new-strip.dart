@@ -13,7 +13,8 @@ class NewStripScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.all(40),
+              height: 90,
+              margin: EdgeInsets.all(35),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +39,8 @@ class NewStripScreen extends StatelessWidget {
                   children: List.generate(
                     6,
                     (index) => Container(
-                      margin: EdgeInsets.fromLTRB((index % 2) * 40.0, 350 - index * 70.0, 0, 0),
+                      margin: EdgeInsets.fromLTRB(
+                          (index % 2) * 40.0, 350 - index * 70.0, 0, 0),
                       child: GestureDetector(
                         child: Container(
                           child: Image.asset(
@@ -48,7 +50,8 @@ class NewStripScreen extends StatelessWidget {
                         ),
                         onTap: () => Get.to(
                           StripScreen(
-                            film: Film('edit title', [], 'assets/box${index + 1}.webp'),
+                            film: Film('edit title', [],
+                                'assets/box${index + 1}.webp'),
                           ),
                         ),
                       ),

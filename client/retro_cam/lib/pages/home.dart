@@ -25,7 +25,8 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.all(40),
+              height: 90,
+              margin: EdgeInsets.fromLTRB(38, 38, 38, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +79,7 @@ class CansGridState extends State<CansGrid> {
 
         return Expanded(
           child: Container(
-            margin: EdgeInsets.fromLTRB(38, 0, 38, 38),
+            margin: EdgeInsets.fromLTRB(38, 10, 38, 38),
             child: (currentFilms != null && onItemClick != null)
                 ? _buildCanGrid(currentFilms, onItemClick)
                 : Center(
@@ -96,20 +97,26 @@ class CansGridState extends State<CansGrid> {
   }
 }
 
-List<Container> _buildGridTileList(List<Film> films, void Function(Film) onItemClick) =>
+List<Container> _buildGridTileList(
+        List<Film> films, void Function(Film) onItemClick) =>
     films.map((film) {
       debugPrint(film.imagePaths[0]);
       return Container(
         child: GestureDetector(
           onTap: () => onItemClick(film),
-          child: Image.asset(film.canImagePath),
+          child: FittedBox(
+            child: Image.asset(film.canImagePath),
+            fit: BoxFit.fitHeight,
+          ),
         ),
       );
     }).toList();
 
-Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) => GridView.count(
+Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) =>
+    GridView.count(
+      padding: const EdgeInsets.all(10),
       crossAxisCount: 2,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
+      mainAxisSpacing: 20,
+      crossAxisSpacing: 60,
       children: _buildGridTileList(films, onItemClick),
     );
