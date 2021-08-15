@@ -68,7 +68,8 @@ class DatabaseHelper {
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -108,13 +109,14 @@ class DatabaseHelper {
       return;
     }
     Database db = await database;
-    db.update(tableFilms, film.toMap(), where: '$columnId  = ?', whereArgs: [film.id]);
+    db.update(tableFilms, film.toMap(),
+        where: '$columnId  = ?', whereArgs: [film.id]);
   }
 
   Future<List<Film>> queryAllFilms() async {
     Database db = await database;
-    List<Map> maps = await db
-        .query(tableFilms, columns: [columnId, columnName, columnImagePaths, columnCanImagePath]);
+    List<Map> maps = await db.query(tableFilms,
+        columns: [columnId, columnName, columnImagePaths, columnCanImagePath]);
 
     print(maps.join('\n'));
     if (maps.length > 0) {
