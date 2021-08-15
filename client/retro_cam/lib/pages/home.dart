@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:retro_cam/components/film-container.dart';
 import 'package:retro_cam/components/navbar.dart';
 import 'package:retro_cam/models/film.dart';
 import 'package:retro_cam/pages/new-strip.dart';
@@ -88,14 +89,10 @@ class CansGridState extends State<CansGrid> {
 
 List<Container> _buildGridTileList(List<Film> films, void Function(Film) onItemClick) =>
     films.map((film) {
-      debugPrint(film.imagePaths[0]);
       return Container(
-        child: GestureDetector(
-          onTap: () => onItemClick(film),
-          child: FittedBox(
-            child: Image.asset(film.canImagePath),
-            fit: BoxFit.fitHeight,
-          ),
+        child: FilmContainer(
+          imagePath: film.canImagePath,
+          onClick: () => onItemClick(film),
         ),
       );
     }).toList();
