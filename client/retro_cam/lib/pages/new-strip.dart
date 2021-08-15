@@ -13,11 +13,11 @@ class NewStripScreen extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              height: 90,
-              margin: EdgeInsets.all(35),
+              height: 80,
+              margin: EdgeInsets.all(38),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     'Select',
@@ -40,12 +40,14 @@ class NewStripScreen extends StatelessWidget {
                     6,
                     (index) => Container(
                       margin: EdgeInsets.fromLTRB(
-                          (index % 2) * 40.0, 350 - index * 70.0, 0, 0),
+                          (index % 2) * 40.0, 450 - index * 85.0, 0, 0),
                       child: GestureDetector(
                         child: Container(
+                          height: 130,
                           child: Image.asset(
                             'assets/box${index + 1}.webp',
-                            height: 120,
+                            //height: 140,
+                            fit: BoxFit.fitHeight,
                           ),
                         ),
                         onTap: () => Get.to(

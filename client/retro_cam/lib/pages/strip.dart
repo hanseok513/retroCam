@@ -24,7 +24,8 @@ class StripScreenState extends State<StripScreen> {
     super.initState();
 
     List<String> imagePaths = widget.film.imagePaths;
-    imagePaths.addAllIf(imagePaths.length < 4, List.filled(4 - imagePaths.length, ''));
+    imagePaths.addAllIf(
+        imagePaths.length < 4, List.filled(4 - imagePaths.length, ''));
     film = widget.film;
   }
 
@@ -71,7 +72,8 @@ class StripScreenState extends State<StripScreen> {
                                 onPressed: () => {},
                               ),
                               IconButton(
-                                icon: Icon(Icons.file_download, color: Colors.white),
+                                icon: Icon(Icons.file_download,
+                                    color: Colors.white),
                                 onPressed: () => {},
                               ),
                             ],
@@ -126,7 +128,8 @@ class StripScreenState extends State<StripScreen> {
                         child: TextField(
                           autofocus: true,
                           onSubmitted: (data) => setState(() {
-                            film = Film.withId(data, film.imagePaths, film.canImagePath, film.id);
+                            film = Film.withId(data, film.imagePaths,
+                                film.canImagePath, film.id);
                           }),
                         ),
                         backgroundColor: Colors.black.withOpacity(0.1),

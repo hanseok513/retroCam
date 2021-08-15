@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              height: 70,
+              height: 80,
               margin: EdgeInsets.fromLTRB(38, 38, 38, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,8 +79,7 @@ class CansGridState extends State<CansGrid> {
 
         return Expanded(
           child: Container(
-            //decoration: BoxDecoration(color: Colors.yellow),
-            margin: EdgeInsets.fromLTRB(38, 0, 38, 38),
+            margin: EdgeInsets.fromLTRB(38, 50, 38, 38),
             child: (currentFilms != null && onItemClick != null)
                 ? _buildCanGrid(currentFilms, onItemClick)
                 : Center(
