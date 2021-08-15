@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:retro_cam/components/navbar.dart';
 import 'package:retro_cam/models/film.dart';
 import 'package:retro_cam/pages/new-strip.dart';
 import 'package:retro_cam/pages/strip.dart';
@@ -24,23 +23,12 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: 70,
-              margin: EdgeInsets.fromLTRB(38, 38, 38, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'Retro Cam',
-                    style: TextStyle(color: Colors.white, fontSize: 28),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => {Get.to(NewStripScreen())},
-                    color: Colors.white,
-                  )
-                ],
+            SimpleNavBar(
+              title: 'Retro Cam',
+              button: IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => {Get.to(NewStripScreen())},
+                color: Colors.white,
               ),
             ),
             CansGrid(onItemClick: (film) => Get.to(StripScreen(film: film)))
@@ -98,8 +86,7 @@ class CansGridState extends State<CansGrid> {
   }
 }
 
-List<Container> _buildGridTileList(
-        List<Film> films, void Function(Film) onItemClick) =>
+List<Container> _buildGridTileList(List<Film> films, void Function(Film) onItemClick) =>
     films.map((film) {
       debugPrint(film.imagePaths[0]);
       return Container(
@@ -113,8 +100,7 @@ List<Container> _buildGridTileList(
       );
     }).toList();
 
-Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) =>
-    GridView.count(
+Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) => GridView.count(
       padding: const EdgeInsets.all(10),
       crossAxisCount: 2,
       mainAxisSpacing: 20,
