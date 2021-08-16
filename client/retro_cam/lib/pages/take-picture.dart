@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:retro_cam/components/navbar.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AvailableCameraController {
   Future<List<CameraDescription>> _cameraDescription;
@@ -52,6 +54,7 @@ class _TakePictureBody extends StatefulWidget {
 class _TakePictureBodyState extends State<_TakePictureBody> {
   List<CameraController> _controllers;
   bool isAltnativeCamera;
+  double exposurePoint;
 
   @override
   void initState() {
@@ -59,6 +62,7 @@ class _TakePictureBodyState extends State<_TakePictureBody> {
     _controllers =
         widget.cameras.map((cd) => CameraController(cd, ResolutionPreset.medium)).toList();
     isAltnativeCamera = true;
+    exposurePoint = 0.0;
   }
 
   @override
@@ -71,66 +75,70 @@ class _TakePictureBodyState extends State<_TakePictureBody> {
 
   @override
   Widget build(BuildContext context) {
-    CameraController currentController = _controllers[isAltnativeCamera ? 1 : 0];
-    Future<void> _initializeControllerFuture = currentController.initialize();
+    // CameraController currentController = _controllers[isAltnativeCamera ? 1 : 0];
+    Future<CameraController> currentController = () async {
+      final controller = _controllers[isAltnativeCamera ? 1 : 0];
+      await controller.initialize();
+      return controller;
+    }();
 
     return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
+      body: FutureBuilder<CameraController>(
+        future: currentController,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done && _controllers != null) {
+          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            CameraController controller = snapshot.data;
             return Container(
+              color: Colors.black,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: new Stack(
-                      alignment: FractionalOffset.center,
-                      children: <Widget>[
-                        new Positioned.fill(
-                          child: new AspectRatio(
-                            aspectRatio: 1.0,
-                            child: new Positioned.fill(
-                              child: ShaderMask(
-                                shaderCallback: (Rect bounds) {
-                                  return LinearGradient(
-                                    colors: <Color>[Colors.yellow, Colors.yellow],
-                                  ).createShader(bounds);
-                                },
-                                blendMode: BlendMode.color,
-                                child: new CameraPreview(
-                                  currentController,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                  SimpleNavBar(
+                    title: '',
+                    button: IconButton(
+                      icon: Icon(Icons.chevron_right),
+                      onPressed: () => Get.back(),
                     ),
                   ),
+                  Expanded(child: CameraPreviewControl(controller)),
                   Container(
+                    height: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 64),
                     color: Colors.black,
-                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                    alignment: Alignment.center,
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.camera_alt, size: 64),
-                          onPressed: () => setState(() => {isAltnativeCamera = !isAltnativeCamera}),
+                          icon: Icon(Icons.circle, size: 48),
+                          onPressed: () async {
+                            final image =
+                                await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+                            // TODO(hanseok): What should we do with this image?
+                          },
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 16, 16),
+                          child: IconButton(
+                            alignment: Alignment.center,
+                            icon: Icon(Icons.circle, size: 64),
+                            onPressed: () async {
+                              try {
+                                Directory appDocDir = await getApplicationDocumentsDirectory();
+                                final imageFile = await controller.takePicture();
+                                Get.back(result: imageFile.path);
+                              } catch (e) {
+                                print(e);
+                                Get.back();
+                              }
+                            },
+                          ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.camera, size: 64),
-                          onPressed: () async {
-                            try {
-                              await _initializeControllerFuture;
-                              Directory appDocDir = await getApplicationDocumentsDirectory();
-                              final imageFile = await currentController.takePicture();
-                              Get.back(result: imageFile.path);
-                            } catch (e) {
-                              print(e);
-                              Get.back();
-                            }
-                          },
+                          icon: Icon(Icons.flip_camera_android_outlined, size: 48),
+                          onPressed: () => setState(() => {isAltnativeCamera = !isAltnativeCamera}),
                         ),
                       ],
                     ),
@@ -142,6 +150,76 @@ class _TakePictureBodyState extends State<_TakePictureBody> {
           return Center(child: CircularProgressIndicator());
         },
       ),
+    );
+  }
+}
+
+class CameraPreviewControl extends StatefulWidget {
+  final CameraController controller;
+  CameraPreviewControl(this.controller);
+
+  @override
+  CameraPreviewControlState createState() => CameraPreviewControlState();
+}
+
+Future<List<double>> getExposureOffsetRange(CameraController controller) async {
+  final min = await controller.getMinExposureOffset();
+  final max = await controller.getMaxExposureOffset();
+  return [min, max];
+}
+
+class CameraPreviewControlState extends State<CameraPreviewControl> {
+  double exposureOffset;
+  Future<List<double>> exposureOffsetRange;
+
+  @override
+  void initState() {
+    super.initState();
+    exposureOffset = 0.0;
+    exposureOffsetRange = getExposureOffsetRange(widget.controller);
+  }
+
+  @override
+  Widget build(BuildContext build) {
+    widget.controller.setExposureOffset(exposureOffset);
+    return FutureBuilder<List<double>>(
+      future: exposureOffsetRange,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+          final min = snapshot.data[0];
+          final max = snapshot.data[1];
+          return Column(
+            children: [
+              Expanded(
+                child: CameraPreview(
+                  widget.controller,
+                ),
+              ),
+              Container(
+                width: 200,
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
+                    trackHeight: 2,
+                  ),
+                  child: Slider(
+                    activeColor: Colors.white,
+                    value: exposureOffset,
+                    min: min,
+                    max: max,
+                    onChanged: (double newValue) {
+                      setState(() {
+                        this.exposureOffset = newValue;
+                      });
+                    },
+                  ),
+                ),
+              )
+            ],
+          );
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 }
