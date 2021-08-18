@@ -14,16 +14,21 @@ class NewStripScreen extends StatelessWidget {
         decoration: BoxDecoration(color: Colors.black),
         child: Column(
           children: [
-            SimpleNavBar(
-              title: 'Select',
-              button: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => {Get.to(HomeScreen())},
-                color: Colors.white,
+            Container(
+              height: 109,
+              margin: EdgeInsets.fromLTRB(5, 15, 0, 0),
+              child: SimpleNavBar(
+                title: 'Select',
+                button: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => {Get.to(HomeScreen())},
+                  color: Colors.white,
+                ),
               ),
             ),
             Expanded(
-              child: Container(child: FilmContainerSelector(6), alignment: Alignment.center),
+              child: Container(
+                  child: FilmContainerSelector(6), alignment: Alignment.center),
             )
           ],
         ),
@@ -44,7 +49,8 @@ class FilmContainerSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final containerHeightWithoutOverlapped = filmContainerHeight - filmContainerOverlapHeight;
+    final containerHeightWithoutOverlapped =
+        filmContainerHeight - filmContainerOverlapHeight;
     final fullheightWithoutFirstContainer =
         (availableContainerCount - 1) * containerHeightWithoutOverlapped;
     final fullHeight = filmContainerHeight + fullheightWithoutFirstContainer;
@@ -55,9 +61,12 @@ class FilmContainerSelector extends StatelessWidget {
         children: List.generate(6, (index) {
           var imagePath = 'assets/box${index + 1}.webp';
           return Container(
+            height: 130,
+            //decoration: BoxDecoration(color: Colors.yellow),
             margin: EdgeInsets.only(
               left: (index % 2) * oddFilmContainerOffsetX,
-              top: fullheightWithoutFirstContainer - index * containerHeightWithoutOverlapped,
+              top: fullheightWithoutFirstContainer -
+                  index * containerHeightWithoutOverlapped,
             ),
             child: FilmContainer(
               imagePath: imagePath,

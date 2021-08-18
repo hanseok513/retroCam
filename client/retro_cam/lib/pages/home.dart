@@ -24,12 +24,16 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SimpleNavBar(
-              title: 'Retro Cam',
-              button: IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => {Get.to(NewStripScreen())},
-                color: Colors.white,
+            Container(
+              height: 109,
+              margin: EdgeInsets.fromLTRB(5, 15, 0, 0),
+              child: SimpleNavBar(
+                title: 'Retro Cam',
+                button: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => {Get.to(NewStripScreen())},
+                  color: Colors.white,
+                ),
               ),
             ),
             CansGrid(onItemClick: (film) => Get.to(StripScreen(film: film)))
@@ -68,8 +72,7 @@ class CansGridState extends State<CansGrid> {
 
         return Expanded(
           child: Container(
-            //decoration: BoxDecoration(color: Colors.yellow),
-            margin: EdgeInsets.fromLTRB(38, 0, 38, 38),
+            margin: EdgeInsets.fromLTRB(38, 0, 38, 0),
             child: (currentFilms != null && onItemClick != null)
                 ? _buildCanGrid(currentFilms, onItemClick)
                 : Center(
@@ -87,7 +90,8 @@ class CansGridState extends State<CansGrid> {
   }
 }
 
-List<Container> _buildGridTileList(List<Film> films, void Function(Film) onItemClick) =>
+List<Container> _buildGridTileList(
+        List<Film> films, void Function(Film) onItemClick) =>
     films.map((film) {
       return Container(
         child: FilmContainer(
@@ -97,7 +101,8 @@ List<Container> _buildGridTileList(List<Film> films, void Function(Film) onItemC
       );
     }).toList();
 
-Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) => GridView.count(
+Widget _buildCanGrid(List<Film> films, void Function(Film) onItemClick) =>
+    GridView.count(
       padding: const EdgeInsets.all(10),
       crossAxisCount: 2,
       mainAxisSpacing: 20,
