@@ -24,12 +24,16 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SimpleNavBar(
-              title: 'Retro Cam',
-              button: IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => {Get.to(NewStripScreen())},
-                color: Colors.white,
+            Container(
+              height: 109,
+              margin: EdgeInsets.fromLTRB(5, 15, 0, 0),
+              child: SimpleNavBar(
+                title: 'Retro Cam',
+                button: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => {Get.to(NewStripScreen())},
+                  color: Colors.white,
+                ),
               ),
             ),
             CansGrid(onItemClick: (film) => Get.to(StripScreen(film: film)))
@@ -68,7 +72,7 @@ class CansGridState extends State<CansGrid> {
 
         return Expanded(
           child: Container(
-            margin: EdgeInsets.fromLTRB(38, 50, 38, 38),
+            margin: EdgeInsets.fromLTRB(38, 0, 38, 0),
             child: (currentFilms != null && onItemClick != null)
                 ? _buildCanGrid(currentFilms, onItemClick)
                 : Center(
